@@ -1,5 +1,5 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 
 metadata:
   name: ping-gitops-bootstrap
@@ -7,22 +7,46 @@ metadata:
 
 spec:
 
-  project: default
+  generators:
 
-  source:
-    repoURL: git@github-ping:brunotinoco/ping-gitops.git
-    targetRevision: main
-    path: apps
+  - git:
 
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: ping-gitops
+      repoURL: git@github-ping:brunotinoco/ping-gitops.git
 
-  syncPolicy:
+      revision: main
 
-    automated:
-      prune: true
-      selfHeal: true
+      directories:
 
-    syncOptions:
-      - CreateNamespace=true
+      - path: apps/*
+
+  template:
+
+    metadata:
+
+      name: '{{path.basename}}'
+
+    spec:
+
+      project: default
+
+      source:
+
+        repoURL: git@github-ping:brunotinoco/ping-gitops.git
+
+        targetRevision: main
+
+        path: '{{path}}/base'
+
+      destination:
+
+        server: https://kubernetes.default.svc
+
+        namespace: ping-hml
+
+      syncPolicy:
+
+        automated:
+
+          prune: true
+
+          selfHeal: true
