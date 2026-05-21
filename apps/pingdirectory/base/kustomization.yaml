@@ -1,4 +1,4 @@
 resources:
-
-- pingdirectory-deployment.yaml
+- pingdirectory-deploy.yaml
 - pingdirectory-service.yaml
+- pingdirectory-ldaps-nodeport.yaml
