@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: pingaccess
+  labels:
+    app: pingaccess
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pingaccess
+
+  template:
+    metadata:
+      labels:
+        app: pingaccess
+
+    spec:
+      securityContext:
+        fsGroup: 0
+        runAsNonRoot: true
+
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: pingaccess
+
+          image: docker.io/pingidentity/pingaccess:latest
+
+          imagePullPolicy: IfNotPresent
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+
+            capabilities:
+              drop:
+                - ALL
+
+          ports:
+            - containerPort: 9000
+            - containerPort: 3000
+
+          env:
+            - name: PING_IDENTITY_ACCEPT_EULA
+              value: "YES"
+
+            - name: PA_ADMIN_PASSWORD_INITIAL
+              value: "2FederateM0re"
+
+            - name: PING_IDENTITY_PASSWORD
+              value: "2FederateM0re"
+
+            - name: MAX_HEAP_SIZE
+              value: "2048m"
+
+            - name: PA_ADMIN_PUBLIC_HOSTNAME
+              value: "pingaccess-ping.apps.okd.lab.local"
+
+            - name: PA_ENGINE_PUBLIC_HOSTNAME
+              value: "pingaccess-ping.apps.okd.lab.local"
+
+            - name: PF_ADMIN_PUBLIC_HOSTNAME
+              value: "pingfederate-ping.apps.okd.lab.local"
+
+            - name: PF_ENGINE_PUBLIC_HOSTNAME
+              value: "pingfederate-ping.apps.okd.lab.local"
+
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+
+            limits:
+              memory: "4Gi"
+              cpu: "2"
+
+          startupProbe:
+            tcpSocket:
+              port: 9000
+
+            initialDelaySeconds: 120
+            periodSeconds: 15
+            failureThreshold: 30
+
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+
+            initialDelaySeconds: 60
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+
+            initialDelaySeconds: 180
+            periodSeconds: 20
+
+          volumeMounts:
+            - name: pingaccess-data
+              mountPath: /opt/okd-storage/pingaccess
+            
+            - name: license
+              mountPath: /opt/out/instance/conf/pingaccess.lic
+              subPath: pingaccess.lic
+
+
+      volumes:
+        - name: pingaccess-data
+
+          persistentVolumeClaim:
+            claimName: pingaccess-data
+
+
+        - name: license
+          secret:
+            secretName: pingaccess-license

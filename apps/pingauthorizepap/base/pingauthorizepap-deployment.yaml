@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: pingauthorizepap
+  namespace: ping
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pingauthorizepap
+
+  template:
+    metadata:
+      labels:
+        app: pingauthorizepap
+
+    spec:
+
+      containers:
+
+      - name: pingauthorizepap
+
+        image: docker.io/pingidentity/pingauthorizepap:latest
+
+        imagePullPolicy: IfNotPresent
+
+        ports:
+
+        - containerPort: 1443
+          name: https
+
+        env:
+
+        - name: PING_IDENTITY_ACCEPT_EULA
+          value: "YES"
+
+        - name: PING_IDENTITY_PASSWORD
+          value: "2FederateM0re"
+
+        - name: PING_EXTERNAL_BASE_URL
+          value: "pingauthorizepap-ping.apps.okd.lab.local:443"
+
+        - name: PING_USERNAMES
+          value: "admin"
+
+        - name: PING_PASSWORDS
+          value: "2FederateM0re"
+
+
+        volumeMounts:
+
+        - name: pingauthorizepap-data
+          mountPath: /opt/okd-storage/pingauthorizepap
+
+        - name: pingauthorizepap-license
+          mountPath: /opt/staging/pd.profile/server-root/pre-setup/PingAuthorize.lic
+          subPath: PingAuthorize.lic
+
+      volumes:
+
+      - name: pingauthorizepap-data
+        persistentVolumeClaim:
+          claimName: pingauthorizepap-data
+
+      - name: pingauthorizepap-license
+        secret:
+          secretName: pingauthorizepap-license

@@ -1,0 +1,4 @@
+resources:
+- pingauthorize-deployment.yaml
+- pingauthorize-service.yaml
+- pingauthorize-route.yaml

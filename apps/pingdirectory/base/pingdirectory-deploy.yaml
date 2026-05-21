@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: pingdirectory
+  namespace: ping
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pingdirectory
+
+  template:
+    metadata:
+      labels:
+        app: pingdirectory
+
+    spec:
+      containers:
+        - name: pingdirectory
+          image: docker.io/pingidentity/pingdirectory:latest
+          imagePullPolicy: Always
+
+          ports:
+            - name: ldap
+              containerPort: 1389
+            - name: ldaps
+              containerPort: 1636
+            - name: admin
+              containerPort: 4444
+            - name: https
+              containerPort: 1443
+            - name: repl
+              containerPort: 8989
+
+          env:
+            - name: PING_IDENTITY_ACCEPT_EULA
+              value: "YES"
+
+            - name: USER_BASE_DN
+              value: "dc=tainux,dc=local"
+
+            - name: ROOT_USER_DN
+              value: "cn=administrator"
+
+            - name: ROOT_USER_PASSWORD
+              value: "2FederateM0re"
+
+            - name: ADMIN_USER_NAME
+              value: "admin"
+
+            - name: ADMIN_USER_PASSWORD_FILE
+              value: "2FederateM0re"
+
+            - name: ENCRYPTION_PASSWORD_FILE
+              value: "2FederateM0re"
+
+            - name: MAKELDIF_USERS
+              value: "10"
+
+            - name: SKIP_WAIT_FOR_DNS
+              value: "true"
+
+          volumeMounts:
+            - name: pingdirectory-data
+              mountPath: /opt/out
+
+            - name: pingdirectory-license
+              mountPath: /opt/staging/pd.profile/server-root/pre-setup
+              readOnly: true
+
+      volumes:
+        - name: pingdirectory-data
+          persistentVolumeClaim:
+            claimName: pingdirectory-data
+
+        - name: pingdirectory-passwords
+          secret:
+            secretName: pingdirectory-passwords
+        
+        - name: pingdirectory-license
+          secret:
+            secretName: pingdirectory-license

@@ -1,0 +1,3 @@
+resources:
+- pingfederate-deploy.yaml
+- pingfederate-service.yaml

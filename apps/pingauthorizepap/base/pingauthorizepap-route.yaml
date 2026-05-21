@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+
+metadata:
+  name: pingauthorizepap
+  namespace: ping
+
+spec:
+
+  host: pingauthorizepap-ping.apps.okd.lab.local
+
+  to:
+    kind: Service
+    name: pingauthorizepap
+
+  port:
+    targetPort: https
+
+  tls:
+    termination: passthrough

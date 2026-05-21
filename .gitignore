@@ -1,0 +1,9 @@
+secrets/**
+
+*.lic
+*.crt
+*.key
+*.p12
+
+*.backup
+*.zip

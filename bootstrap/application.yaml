@@ -2,15 +2,15 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 
 metadata:
-  name: ping-gitops
-  namespace: openshift-gitops
+  name: ping-gitops-bootstrap
+  namespace: ping-gitops
 
 spec:
 
   project: default
 
   source:
-    repoURL: https://github.com/brunotinoco/ping-gitops 
+    repoURL: git@github-ping:brunotinoco/ping-gitops.git
     targetRevision: main
     path: apps
 
@@ -19,6 +19,10 @@ spec:
     namespace: ping-gitops
 
   syncPolicy:
+
     automated:
       prune: true
       selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true

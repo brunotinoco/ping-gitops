@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: pingauthorize
+  namespace: ping
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pingauthorize
+
+  template:
+    metadata:
+      labels:
+        app: pingauthorize
+
+    spec:
+
+      containers:
+
+      - name: pingauthorize
+
+        image: docker.io/pingidentity/pingauthorize:latest
+
+        imagePullPolicy: IfNotPresent
+
+        ports:
+
+        - name: https
+          containerPort: 1443
+
+        - name: ldap
+          containerPort: 1389
+
+        - name: ldaps
+          containerPort: 1636
+
+        env:
+
+        - name: PING_IDENTITY_ACCEPT_EULA
+          value: "YES"
+
+        - name: PING_IDENTITY_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pingauthorize-secret
+              key: PING_IDENTITY_PASSWORD
+
+        volumeMounts:
+
+        - name: pingauthorize-data
+          mountPath: /opt/okd-storage/pingauthorize
+
+        - name: pingauthorize-license
+          mountPath: /opt/staging/pd.profile/server-root/pre-setup/PingAuthorize.lic
+          subPath: PingAuthorize.lic
+
+      volumes:
+
+      - name: pingauthorize-data
+        persistentVolumeClaim:
+          claimName: pingauthorize-data
+
+      - name: pingauthorize-license
+        secret:
+          secretName: pingauthorize-license

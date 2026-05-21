@@ -1,0 +1,4 @@
+resources:
+
+- pingdirectory-deployment.yaml
+- pingdirectory-service.yaml

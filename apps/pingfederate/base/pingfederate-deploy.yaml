@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: pingfederate
+  namespace: ping
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: pingfederate
+
+  template:
+    metadata:
+      labels:
+        app: pingfederate
+
+    spec:
+      containers:
+        - name: pingfederate
+
+          image: docker.io/pingidentity/pingfederate:latest
+
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 9999
+            - containerPort: 9031
+
+          env:
+            - name: PING_IDENTITY_ACCEPT_EULA
+              value: "YES"
+           
+            - name: PF_ADMIN_PUBLIC_HOSTNAME
+              value: pingfederate-ping.apps.okd.lab.local
+
+            - name: PF_ENGINE_PUBLIC_HOSTNAME
+              value: pingfederate-ping.apps.okd.lab.local
+
+            - name: PF_ADMIN_PUBLIC_BASEURL
+              value: https://pingfederate-ping.apps.okd.lab.local
+
+
+          volumeMounts:
+            - name: pingfederate-data
+              mountPath: /opt/out
+
+      volumes:
+        - name: pingfederate-data
+          persistentVolumeClaim:
+            claimName: pingfederate-data

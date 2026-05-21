@@ -1,0 +1,4 @@
+resources:
+- pingauthorizepap-deployment.yaml
+- pingauthorizepap-service.yaml
+- pingauthorizepap-route.yaml
