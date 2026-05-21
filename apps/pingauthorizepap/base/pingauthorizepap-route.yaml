@@ -3,7 +3,7 @@ kind: Route
 
 metadata:
   name: pingauthorizepap
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
 

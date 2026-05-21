@@ -2,7 +2,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: pingauthorize
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
   host: pingauthorize-ping.apps.okd.lab.local

@@ -3,7 +3,7 @@ kind: Deployment
 
 metadata:
   name: pingauthorize
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
   replicas: 1

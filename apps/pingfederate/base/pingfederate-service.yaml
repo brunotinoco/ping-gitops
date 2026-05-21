@@ -3,7 +3,7 @@ kind: Service
 
 metadata:
   name: pingfederate
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
   selector:

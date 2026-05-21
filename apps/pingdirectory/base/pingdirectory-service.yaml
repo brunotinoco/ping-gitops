@@ -3,7 +3,7 @@ kind: Service
 
 metadata:
   name: pingdirectory
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
   selector:

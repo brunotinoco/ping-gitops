@@ -3,7 +3,7 @@ kind: Deployment
 
 metadata:
   name: pingfederate
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
   replicas: 1

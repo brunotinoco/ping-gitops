@@ -3,7 +3,7 @@ kind: Deployment
 
 metadata:
   name: pingdirectory
-  namespace: ping
+  namespace: ping-gitops
 
 spec:
   replicas: 1
