@@ -3,7 +3,7 @@ kind: ApplicationSet
 
 metadata:
   name: ping-gitops-bootstrap
-  namespace: ping-gitops
+  namespace: argocd
 
 spec:
 
