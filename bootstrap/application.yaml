@@ -6,47 +6,34 @@ metadata:
   namespace: argocd
 
 spec:
-
   generators:
-
-  - git:
-
-      repoURL: git@github-ping:brunotinoco/ping-gitops.git
-
-      revision: main
-
-      directories:
-
-      - path: apps/*
+    - git:
+        repoURL: git@github.com:brunotinoco/ping-gitops.git
+        revision: main
+        directories:
+          - path: apps/*
+            exclude: false
+          - path: apps/test-app
+            exclude: true
 
   template:
-
     metadata:
-
       name: '{{path.basename}}'
-
     spec:
-
       project: default
 
       source:
-
-        repoURL: git@github-ping:brunotinoco/ping-gitops.git
-
+        repoURL: git@github.com:brunotinoco/ping-gitops.git
         targetRevision: main
-
         path: '{{path}}/base'
 
       destination:
-
         server: https://kubernetes.default.svc
-
-        namespace: ping-hml
+        namespace: ping-gitops
 
       syncPolicy:
-
         automated:
-
           prune: true
-
           selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
